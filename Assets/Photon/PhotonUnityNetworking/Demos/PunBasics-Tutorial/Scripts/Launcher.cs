@@ -11,6 +11,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+using Photon.Pun;
 using Photon.Realtime;
 
 namespace Photon.Pun.Demo.PunBasics
@@ -37,9 +38,9 @@ namespace Photon.Pun.Demo.PunBasics
 		[SerializeField]
 		private byte maxPlayersPerRoom = 4;
 
-		[Tooltip("The UI Loader Anime")]
-		[SerializeField]
-		private LoaderAnime loaderAnime;
+        [Tooltip("The UI Loader Anime")]
+        [SerializeField]
+        private LoaderAnime loaderAnime;
 
 		#endregion
 
@@ -56,14 +57,22 @@ namespace Photon.Pun.Demo.PunBasics
 		/// </summary>
 		string gameVersion = "1";
 
-		#endregion
+        [Space(10)]
+        [Header("Custom Variables")]
+        public InputField PlayerName;
+        public InputField RoomName;
 
-		#region MonoBehaviour CallBacks
+        public Text PlayersInLobby;
 
-		/// <summary>
-		/// MonoBehaviour method called on GameObject by Unity during early initialization phase.
-		/// </summary>
-		void Awake()
+        public string _PlayerName = "";
+        public string _RoomName = "";
+
+    	void Start(){
+            Debug.Log("Connecting to Photon Network");
+            ConnectToPhoton();
+        }
+
+        void Awake()
 		{
 			if (loaderAnime==null)
 			{
@@ -76,54 +85,48 @@ namespace Photon.Pun.Demo.PunBasics
 
 		}
 
-		#endregion
-
-
-		#region Public Methods
-
-		/// <summary>
-		/// Start the connection process. 
-		/// - If already connected, we attempt joining a random room
-		/// - if not yet connected, Connect this application instance to Photon Cloud Network
-		/// </summary>
 		public void Connect()
 		{
-			// we want to make sure the log is clear everytime we connect, we might have several failed attempted if connection failed.
-			feedbackText.text = "";
+			//feedbackText.text = "";
+            //isConnecting = true;
 
-			// keep track of the will to join a room, because when we come back from the game we will get a callback that we are connected, so we need to know what to do then
-			isConnecting = true;
+			//controlPanel.SetActive(false);
 
-			// hide the Play button for visual consistency
-			controlPanel.SetActive(false);
+		 //   if (loaderAnime!=null){
+			//	loaderAnime.StartLoaderAnimation();
+			//}
 
-			// start the loader animation for visual effect.
-			if (loaderAnime!=null)
-			{
-				loaderAnime.StartLoaderAnimation();
-			}
 
-			// we check if we are connected or not, we join if we are , else we initiate the connection to the server.
-			if (PhotonNetwork.IsConnected)
-			{
-				LogFeedback("Joining Room...");
-				// #Critical we need at this point to attempt joining a Random Room. If it fails, we'll get notified in OnJoinRandomFailed() and we'll create one.
-				PhotonNetwork.JoinRandomRoom();
-			}else{
 
-				LogFeedback("Connecting...");
-				
-				// #Critical, we must first and foremost connect to Photon Online Server.
-			    PhotonNetwork.GameVersion = this.gameVersion;
-				PhotonNetwork.ConnectUsingSettings();
-			}
+            if (PhotonNetwork.IsConnected){
+
+                Debug.Log("PhotonNetwork.IsConnected! | Trying to Create/Join Room" + RoomName.text);
+                RoomOptions roomOptions = new RoomOptions();
+                TypedLobby typedLobby = new TypedLobby(_RoomName, LobbyType.Default);
+                PhotonNetwork.JoinOrCreateRoom(_RoomName, roomOptions, typedLobby);
+
+            }else{
+
+            }
 		}
 
-		/// <summary>
-		/// Logs the feedback in the UI view for the player, as opposed to inside the Unity Editor for the developer.
-		/// </summary>
-		/// <param name="message">Message.</param>
-		void LogFeedback(string message)
+		
+        void ConnectToPhoton(){
+            PhotonNetwork.GameVersion = this.gameVersion;
+            PhotonNetwork.ConnectUsingSettings();
+        }
+
+        public void SetPlayerName(string s)
+        {
+            _PlayerName = s;
+        }
+
+        public void SetRoomName(string s)
+        {
+            _RoomName = s;
+        }
+
+        void LogFeedback(string message)
 		{
 			// we do not assume there is a feedbackText defined.
 			if (feedbackText == null) {
@@ -138,13 +141,7 @@ namespace Photon.Pun.Demo.PunBasics
 
 
         #region MonoBehaviourPunCallbacks CallBacks
-        // below, we implement some callbacks of PUN
-        // you can find PUN's callbacks in the class MonoBehaviourPunCallbacks
 
-
-        /// <summary>
-        /// Called after the connection to the master is established and authenticated
-        /// </summary>
         public override void OnConnectedToMaster()
 		{
             // we don't want to do anything if we are not attempting to join a room. 
@@ -154,9 +151,9 @@ namespace Photon.Pun.Demo.PunBasics
 			{
 				LogFeedback("OnConnectedToMaster: Next -> try to Join Random Room");
 				Debug.Log("PUN Basics Tutorial/Launcher: OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.\n Calling: PhotonNetwork.JoinRandomRoom(); Operation will fail if no room found");
-		
-				// #Critical: The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnJoinRandomFailed()
-				PhotonNetwork.JoinRandomRoom();
+
+                // #Critical: The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnJoinRandomFailed()
+                //Connect();
 			}
 		}
 
@@ -205,22 +202,29 @@ namespace Photon.Pun.Demo.PunBasics
 		/// </remarks>
 		public override void OnJoinedRoom()
 		{
-			LogFeedback("<Color=Green>OnJoinedRoom</Color> with "+PhotonNetwork.CurrentRoom.PlayerCount+" Player(s)");
-			Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.\nFrom here on, your game would be running.");
-		
-			// #Critical: We only load if we are the first player, else we rely on  PhotonNetwork.AutomaticallySyncScene to sync our instance scene.
-			if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-			{
-				Debug.Log("We load the 'Room for 1' ");
 
-				// #Critical
-				// Load the Room Level. 
-				PhotonNetwork.LoadLevel("Room for 1");
+            HowManyPlayersInLobby();
 
-			}
+
+
+
+   //         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+			//{
+			//	Debug.Log("We load the 'Room for 1' ");
+
+			//	// #Critical
+			//	// Load the Room Level. 
+			//	PhotonNetwork.LoadLevel("MainArena");
+
+			//}
 		}
 
-		#endregion
-		
-	}
+        public void HowManyPlayersInLobby()
+        {
+            Debug.Log("Total players in Lobby : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
+        }
+
+        #endregion
+
+    }
 }
