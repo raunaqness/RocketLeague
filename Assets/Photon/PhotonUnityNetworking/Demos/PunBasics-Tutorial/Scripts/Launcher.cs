@@ -63,6 +63,7 @@ namespace Photon.Pun.Demo.PunBasics
         public InputField RoomName;
 
         public Text PlayersInLobby;
+        public Text TempLog;
 
         public string _PlayerName = "";
         public string _RoomName = "";
@@ -142,6 +143,21 @@ namespace Photon.Pun.Demo.PunBasics
 
         #region MonoBehaviourPunCallbacks CallBacks
 
+        public override void OnConnected()
+        {
+            base.OnConnected();
+            TempLog.text = "Connected to Photon!";
+
+            //Debug.Log("Total players in Lobby : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
+            //Debug.Log("Room Info | Name " + PhotonNetwork.CurrentRoom.Name);
+            //Debug.Log("Room Info | Info " + PhotonNetwork.CurrentRoom.ToString());
+        }
+
+        public void JoinGGRoom()
+        {
+            PhotonNetwork.JoinRoom("Ggroom");
+        }
+
         public override void OnConnectedToMaster()
 		{
             // we don't want to do anything if we are not attempting to join a room. 
@@ -152,9 +168,11 @@ namespace Photon.Pun.Demo.PunBasics
 				LogFeedback("OnConnectedToMaster: Next -> try to Join Random Room");
 				Debug.Log("PUN Basics Tutorial/Launcher: OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.\n Calling: PhotonNetwork.JoinRandomRoom(); Operation will fail if no room found");
 
+
+                TempLog.text = "Connected to Photon!";
                 // #Critical: The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnJoinRandomFailed()
                 //Connect();
-			}
+            }
 		}
 
 		/// <summary>
@@ -204,24 +222,33 @@ namespace Photon.Pun.Demo.PunBasics
 		{
 
             HowManyPlayersInLobby();
+            //PhotonNetwork.LoadLevel("MainArena");
 
 
 
 
-   //         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-			//{
-			//	Debug.Log("We load the 'Room for 1' ");
+            //         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+            //{
+            //	Debug.Log("We load the 'Room for 1' ");
 
-			//	// #Critical
-			//	// Load the Room Level. 
-			//	PhotonNetwork.LoadLevel("MainArena");
+            //	// #Critical
+            //	// Load the Room Level. 
+            //	PhotonNetwork.LoadLevel("MainArena");
 
-			//}
-		}
+            //}
+        }
+
+        public void LoadArena()
+        {
+            PhotonNetwork.LoadLevel("MainArena");
+        }
 
         public void HowManyPlayersInLobby()
         {
             Debug.Log("Total players in Lobby : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
+            Debug.Log("Room Info | Name " + PhotonNetwork.CurrentRoom.Name);
+            Debug.Log("Room Info | Info " + PhotonNetwork.CurrentRoom.ToString());
+
         }
 
         #endregion

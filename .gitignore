@@ -3,7 +3,7 @@
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
-MacOS
+MacOS/
 Assets/AssetStoreTools*
 
 # Visual Studio cache directory
