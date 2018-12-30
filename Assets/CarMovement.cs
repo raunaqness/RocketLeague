@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using Photon;
+using Photon.Pun;
+
 public class CarMovement : MonoBehaviour {
 
     [Range(5f, 50f)]
@@ -20,6 +23,12 @@ public class CarMovement : MonoBehaviour {
     private float turnInputValue;
     private float originalPitch;
 
+    PhotonView photonView;
+
+    private void Start()
+    {
+         photonView = gameObject.GetComponent<PhotonView>();
+    }
 
     private void Awake()
     {
@@ -36,6 +45,12 @@ public class CarMovement : MonoBehaviour {
 
     private void Update()
     {
+
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
+
         movementInputValue = Input.GetAxis("Vertical");
         turnInputValue = Input.GetAxis("Horizontal");
 
