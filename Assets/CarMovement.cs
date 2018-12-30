@@ -28,7 +28,7 @@ public class CarMovement : MonoBehaviour {
 
     private void OnEnable()
     {
-        rb.isKinematic = true;
+        //rb.isKinematic = true;
 
         movementInputValue = 0f;
         turnInputValue = 0f;
