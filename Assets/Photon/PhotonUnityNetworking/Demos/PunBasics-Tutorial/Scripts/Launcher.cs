@@ -36,7 +36,7 @@ namespace Photon.Pun.Demo.PunBasics
 
 		[Tooltip("The maximum number of players per room")]
 		[SerializeField]
-		private byte maxPlayersPerRoom = 4;
+		private byte maxPlayersPerRoom = 2;
 
         [Tooltip("The UI Loader Anime")]
         [SerializeField]
@@ -62,14 +62,21 @@ namespace Photon.Pun.Demo.PunBasics
         public InputField PlayerName;
         public InputField RoomName;
 
+        [Space(5)]
         public Text PlayersInLobby;
-        public Text TempLog;
+        public Text ConnectionStatus;
 
+        [Space(5)]
         public string _PlayerName = "";
         public string _RoomName = "";
 
-    	void Start(){
+        [Space(5)]
+        public GameObject RoomJoinUI;
+        public GameObject LoadArenaButton;
+
+        void Start(){
             Debug.Log("Connecting to Photon Network");
+            RoomJoinUI.SetActive(false);
             ConnectToPhoton();
         }
 
@@ -113,6 +120,7 @@ namespace Photon.Pun.Demo.PunBasics
 
 		
         void ConnectToPhoton(){
+            ConnectionStatus.text = "Connecting...";
             PhotonNetwork.GameVersion = this.gameVersion;
             PhotonNetwork.ConnectUsingSettings();
         }
@@ -146,7 +154,11 @@ namespace Photon.Pun.Demo.PunBasics
         public override void OnConnected()
         {
             base.OnConnected();
-            TempLog.text = "Connected to Photon!";
+            ConnectionStatus.text = "Connected to Photon!";
+            ConnectionStatus.color = Color.green;
+            RoomJoinUI.SetActive(true);
+            LoadArenaButton.SetActive(false);
+
 
             //Debug.Log("Total players in Lobby : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
             //Debug.Log("Room Info | Name " + PhotonNetwork.CurrentRoom.Name);
@@ -168,8 +180,6 @@ namespace Photon.Pun.Demo.PunBasics
 				LogFeedback("OnConnectedToMaster: Next -> try to Join Random Room");
 				Debug.Log("PUN Basics Tutorial/Launcher: OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.\n Calling: PhotonNetwork.JoinRandomRoom(); Operation will fail if no room found");
 
-
-                TempLog.text = "Connected to Photon!";
                 // #Critical: The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnJoinRandomFailed()
                 //Connect();
             }
@@ -197,7 +207,7 @@ namespace Photon.Pun.Demo.PunBasics
 		public override void OnDisconnected(DisconnectCause cause)
 		{
 			LogFeedback("<Color=Red>OnDisconnected</Color> "+cause);
-			Debug.LogError("PUN Basics Tutorial/Launcher:Disconnected");
+			//Debug.LogError("PUN Basics Tutorial/Launcher:Disconnected");
 
 			// #Critical: we failed to connect or got disconnected. There is not much we can do. Typically, a UI system should be in place to let the user attemp to connect again.
 			loaderAnime.StopLoaderAnimation();
@@ -222,6 +232,7 @@ namespace Photon.Pun.Demo.PunBasics
 		{
 
             HowManyPlayersInLobby();
+            LoadArenaButton.SetActive(true);
             //PhotonNetwork.LoadLevel("MainArena");
 
 
@@ -245,9 +256,12 @@ namespace Photon.Pun.Demo.PunBasics
 
         public void HowManyPlayersInLobby()
         {
+
             Debug.Log("Total players in Lobby : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
             Debug.Log("Room Info | Name " + PhotonNetwork.CurrentRoom.Name);
             Debug.Log("Room Info | Info " + PhotonNetwork.CurrentRoom.ToString());
+
+            PlayersInLobby.text = "Players : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
 
         }
 
