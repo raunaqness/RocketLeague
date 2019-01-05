@@ -50,38 +50,33 @@ namespace Photon.Pun.Demo.PunBasics
         /// MonoBehaviour method called on GameObject by Unity during initialization phase.
         /// </summary>
         void Start()
-		{
-			Instance = this;
+    		{
+    			Instance = this;
 
-			// in case we started this demo with the wrong scene being active, simply load the menu scene
-			if (!PhotonNetwork.IsConnected)
-			{
-				SceneManager.LoadScene("PunBasics-Launcher");
+    			if (!PhotonNetwork.IsConnected){
+    				SceneManager.LoadScene("Launcher");
+    				return;
+    			}
 
-				return;
-			}
+    			if (playerPrefab == null) 
+         { // #Tip Never assume public properties of Components are filled up properly, always check and inform the developer of it.
 
-			if (playerPrefab == null) { // #Tip Never assume public properties of Components are filled up properly, always check and inform the developer of it.
-
-				Debug.LogError("<Color=Red><b>Missing</b></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
-			} else {
+    				Debug.LogError("<Color=Red><b>Missing</b></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
+    			} else {
 
 
-				if (PlayerManager.LocalPlayerInstance==null)
-				{
-				    Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
+    				if (PlayerManager.LocalPlayerInstance==null)
+    				{
+    				    Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
 
-					// we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-					PhotonNetwork.Instantiate(this.playerPrefab.name, CarSpawnPosition1.transform.position, Quaternion.identity, 0);
-				}else{
+    					// we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
+    					PhotonNetwork.Instantiate(this.playerPrefab.name, CarSpawnPosition1.transform.position, Quaternion.identity, 0);
+    				}else{
 
-					Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
-				}
-
-
-			}
-
-		}
+    					Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
+    				}
+    			}
+    		}
 
 		/// <summary>
 		/// MonoBehaviour method called on GameObject by Unity on every frame.
