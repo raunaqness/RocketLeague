@@ -40,7 +40,8 @@ namespace Photon.Pun.Demo.PunBasics
         [SerializeField]
         private GameObject playerPrefab;
 
-        public GameObject CarSpawnPosition1;
+        public GameObject Player1SpawnPosition;
+        public GameObject Player2SpawnPosition;
 
         #endregion
 
@@ -69,9 +70,17 @@ namespace Photon.Pun.Demo.PunBasics
     				{
     				    Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
 
-    					// we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-    					PhotonNetwork.Instantiate(this.playerPrefab.name, CarSpawnPosition1.transform.position, Quaternion.identity, 0);
-    				}else{
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    PhotonNetwork.Instantiate(this.playerPrefab.name, Player1SpawnPosition.transform.position, Player1SpawnPosition.transform.rotation, 0);
+                }
+                else
+                {
+                    PhotonNetwork.Instantiate(this.playerPrefab.name, Player2SpawnPosition.transform.position, Player2SpawnPosition.transform.rotation, 0);
+                }
+                
+                }
+                else{
 
     					Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
     				}
