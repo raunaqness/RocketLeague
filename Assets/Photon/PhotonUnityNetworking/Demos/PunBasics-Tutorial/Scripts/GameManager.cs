@@ -35,6 +35,8 @@ namespace Photon.Pun.Demo.PunBasics
 		#region Private Fields
 
 		private GameObject instance;
+        public GameObject WinnerUI;
+        private GameObject temp;
 
         [Tooltip("The prefab to use for representing the player")]
         [SerializeField]
@@ -42,6 +44,8 @@ namespace Photon.Pun.Demo.PunBasics
 
         public GameObject Player1SpawnPosition;
         public GameObject Player2SpawnPosition;
+
+        private GameObject player1, player2;
 
         #endregion
 
@@ -72,13 +76,16 @@ namespace Photon.Pun.Demo.PunBasics
 
                 if (PhotonNetwork.IsMasterClient)
                 {
-                    PhotonNetwork.Instantiate(this.playerPrefab.name, Player1SpawnPosition.transform.position, Player1SpawnPosition.transform.rotation, 0);
+                        Debug.Log("--Player1");
+                     player1 = PhotonNetwork.Instantiate(this.playerPrefab.name, Player1SpawnPosition.transform.position, Player1SpawnPosition.transform.rotation, 0);
                 }
                 else
                 {
-                    PhotonNetwork.Instantiate(this.playerPrefab.name, Player2SpawnPosition.transform.position, Player2SpawnPosition.transform.rotation, 0);
-                }
-                
+                        player2 = PhotonNetwork.Instantiate(this.playerPrefab.name, Player2SpawnPosition.transform.position, Player2SpawnPosition.transform.rotation, 0);
+                        Debug.Log("--Player2");
+
+                    }
+
                 }
                 else{
 
@@ -92,7 +99,6 @@ namespace Photon.Pun.Demo.PunBasics
 		/// </summary>
 		void Update()
 		{
-			// "back" button of phone equals "Escape". quit app if that's pressed
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
 				QuitApplication();
@@ -153,7 +159,12 @@ namespace Photon.Pun.Demo.PunBasics
 			PhotonNetwork.LeaveRoom();
 		}
 
-		public void QuitApplication()
+        public void DisableUI()
+        {
+            WinnerUI.SetActive(false);
+        }
+
+        public void QuitApplication()
 		{
 			Application.Quit();
 		}
