@@ -33,6 +33,15 @@ public class CarMovement : MonoBehaviour {
         photonView = gameObject.GetComponent<PhotonView>();
         playername = photonView.Owner.NickName;
         gameObject.name = playername;
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Debug.Log("I am the Master");
+        }
+        else
+        {
+            Debug.Log("I am the Pleb");
+        }
     }
 
     private void Awake()
