@@ -63,7 +63,7 @@ namespace Photon.Pun.Demo.PunBasics
         public InputField RoomName;
 
         [Space(5)]
-        public Text PlayersInLobby;
+        public Text PlayerStatus;
         public Text ConnectionStatus;
 
         [Space(5)]
@@ -233,25 +233,18 @@ namespace Photon.Pun.Demo.PunBasics
 		{
 
             HowManyPlayersInLobby();
+
             if (PhotonNetwork.IsMasterClient)
             {
                 LoadArenaButton.SetActive(true);
+                PlayerStatus.text = "Your are Lobby Leader";
+            }
+            else
+            {
+                PlayerStatus.text = "Connected to Lobby";
             }
 
-            //PhotonNetwork.LoadLevel("MainArena");
 
-
-
-
-            //         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-            //{
-            //	Debug.Log("We load the 'Room for 1' ");
-
-            //	// #Critical
-            //	// Load the Room Level. 
-            //	PhotonNetwork.LoadLevel("MainArena");
-
-            //}
         }
 
         public void LoadArena()
@@ -265,8 +258,6 @@ namespace Photon.Pun.Demo.PunBasics
             Debug.Log("Total players in Lobby : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
             Debug.Log("Room Info | Name " + PhotonNetwork.CurrentRoom.Name);
             Debug.Log("Room Info | Info " + PhotonNetwork.CurrentRoom.ToString());
-
-            PlayersInLobby.text = "Players : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
 
         }
 
