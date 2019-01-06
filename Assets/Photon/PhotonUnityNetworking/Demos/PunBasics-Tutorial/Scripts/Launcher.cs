@@ -108,6 +108,7 @@ namespace Photon.Pun.Demo.PunBasics
 
             if (PhotonNetwork.IsConnected){
 
+                PhotonNetwork.LocalPlayer.NickName = _PlayerName;
                 Debug.Log("PhotonNetwork.IsConnected! | Trying to Create/Join Room" + RoomName.text);
                 RoomOptions roomOptions = new RoomOptions();
                 TypedLobby typedLobby = new TypedLobby(_RoomName, LobbyType.Default);
@@ -232,7 +233,11 @@ namespace Photon.Pun.Demo.PunBasics
 		{
 
             HowManyPlayersInLobby();
-            LoadArenaButton.SetActive(true);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                LoadArenaButton.SetActive(true);
+            }
+
             //PhotonNetwork.LoadLevel("MainArena");
 
 

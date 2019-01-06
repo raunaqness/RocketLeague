@@ -18,7 +18,10 @@ public class CarMovement : MonoBehaviour {
 
     private string movementAxisName ;
     private string turnAxisName;
+    string playername = "";
+
     private Rigidbody rb;
+
     private float movementInputValue;
     private float turnInputValue;
     private float originalPitch;
@@ -27,12 +30,15 @@ public class CarMovement : MonoBehaviour {
 
     private void Start()
     {
-         photonView = gameObject.GetComponent<PhotonView>();
+        photonView = gameObject.GetComponent<PhotonView>();
+        playername = photonView.Owner.NickName;
+        gameObject.name = playername;
     }
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+
     }
 
     private void OnEnable()
@@ -46,13 +52,13 @@ public class CarMovement : MonoBehaviour {
     private void Update()
     {
 
-        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        if (photonView.IsMine)
         {
-            return;
+            movementInputValue = Input.GetAxis("Vertical");
+            turnInputValue = Input.GetAxis("Horizontal");
         }
 
-        movementInputValue = Input.GetAxis("Vertical");
-        turnInputValue = Input.GetAxis("Horizontal");
+
 
     }
 
@@ -60,6 +66,7 @@ public class CarMovement : MonoBehaviour {
     {
         Move();
         Turn();
+
     }
 
     private void Move()
