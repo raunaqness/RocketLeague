@@ -65,7 +65,6 @@ namespace Photon.Pun.Demo.PunBasics
 
         [Space(5)]
         public GameObject RoomJoinUI;
-
         public GameObject Button_LoadArena;
         public GameObject Button_JoinRoom;
 

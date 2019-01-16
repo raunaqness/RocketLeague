@@ -41,9 +41,12 @@ namespace Photon.Pun.Demo.PunBasics
         [Tooltip("The prefab to use for representing the player")]
         [SerializeField]
         private GameObject playerPrefab;
+        private GameObject ball;
 
         public GameObject Player1SpawnPosition;
         public GameObject Player2SpawnPosition;
+
+        public GameObject BallSpawnTransform;
 
         private GameObject player1, player2;
 
@@ -64,9 +67,8 @@ namespace Photon.Pun.Demo.PunBasics
     			}
 
     			if (playerPrefab == null) 
-         { // #Tip Never assume public properties of Components are filled up properly, always check and inform the developer of it.
-
-    				Debug.LogError("<Color=Red><b>Missing</b></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
+         { 
+         
     			} else {
 
 
@@ -78,13 +80,13 @@ namespace Photon.Pun.Demo.PunBasics
                 {
                         Debug.Log("--Player1");
                      player1 = PhotonNetwork.Instantiate(this.playerPrefab.name, Player1SpawnPosition.transform.position, Player1SpawnPosition.transform.rotation, 0);
+                        ball = PhotonNetwork.Instantiate("Ball", BallSpawnTransform.transform.position, BallSpawnTransform.transform.rotation, 0);
                 }
                 else
                 {
                         player2 = PhotonNetwork.Instantiate(this.playerPrefab.name, Player2SpawnPosition.transform.position, Player2SpawnPosition.transform.rotation, 0);
                         Debug.Log("--Player2");
-
-                    }
+                }
 
                 }
                 else{
