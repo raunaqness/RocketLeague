@@ -85,8 +85,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.07851832, y: 0.16841948, z: 0.23121147}
-  m_Center: {x: 0.0016275793, y: 0.080987446, z: -0.009217358}
+  m_Size: {x: 0.23402975, y: 0.15012573, z: 0.4589966}
+  m_Center: {x: -0.0047487854, y: 0.07184056, z: -0.028192807}
 --- !u!114 &560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,7 +133,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   ObservedComponents:
   - {fileID: 557}
-  viewIdField: 2
+  viewIdField: 0
   InstantiationId: 2
   isRuntimeInstantiated: 0
 --- !u!114 &557
