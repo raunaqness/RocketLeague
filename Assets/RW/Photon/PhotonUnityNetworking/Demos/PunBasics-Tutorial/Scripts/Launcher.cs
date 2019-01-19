@@ -16,39 +16,34 @@ using Photon.Realtime;
 
 namespace Photon.Pun.Demo.PunBasics
 {
-	#pragma warning disable 649
+#pragma warning disable 649
 
     /// <summary>
     /// Launch manager. Connect, join a random room or create one if none or all full.
     /// </summary>
-	public class Launcher : MonoBehaviourPunCallbacks
+    public class Launcher : MonoBehaviourPunCallbacks
     {
+    
 
-		#region Private Serializable Fields
+        [Tooltip("The Ui Panel to let the user enter name, connect and play")]
+        [SerializeField]
+        private GameObject controlPanel;
 
-		[Tooltip("The Ui Panel to let the user enter name, connect and play")]
-		[SerializeField]
-		private GameObject controlPanel;
+        [Tooltip("The Ui Text to inform the user about the connection progress")]
+        [SerializeField]
+        private Text feedbackText;
 
-		[Tooltip("The Ui Text to inform the user about the connection progress")]
-		[SerializeField]
-		private Text feedbackText;
-
-		[Tooltip("The maximum number of players per room")]
-		[SerializeField]
-		private byte maxPlayersPerRoom = 2;
+        [Tooltip("The maximum number of players per room")]
+        [SerializeField]
+        private byte maxPlayersPerRoom = 2;
 
         [Tooltip("The UI Loader Anime")]
         [SerializeField]
         private LoaderAnime loaderAnime;
 
-		#endregion
+        bool isConnecting;
 
-		#region Private Fields
-
-		bool isConnecting;
-
-		string gameVersion = "1";
+        string gameVersion = "1";
 
         [Space(10)]
         [Header("Custom Variables")]
@@ -62,15 +57,14 @@ namespace Photon.Pun.Demo.PunBasics
         [Space(5)]
         public string _PlayerName = "";
         public string _RoomName = "";
-        public string _Region = "";
 
         [Space(5)]
         public GameObject RoomJoinUI;
         public GameObject Button_LoadArena;
         public GameObject Button_JoinRoom;
-        public GameObject Region;
 
-        void Start(){
+        void Start() {
+            PlayerPrefs.DeleteAll();
             Debug.Log("Connecting to Photon Network");
             RoomJoinUI.SetActive(false);
             Button_LoadArena.SetActive(false);
@@ -78,22 +72,19 @@ namespace Photon.Pun.Demo.PunBasics
         }
 
         void Awake()
-		{
-			if (loaderAnime==null)
-			{
-				Debug.LogError("<Color=Red><b>Missing</b></Color> loaderAnime Reference.",this);
-			}
+        {
+            if (loaderAnime == null)
+            {
+                Debug.LogError("<Color=Red><b>Missing</b></Color> loaderAnime Reference.", this);
+            }
 
-			PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.AutomaticallySyncScene = true;
 
-		}
+        }
 
-		public void Connect()
-		{
-            PhotonNetwork.GameVersion = this.gameVersion;
-            PhotonNetwork.ConnectToRegion("kr");
-
-            if (PhotonNetwork.IsConnected){
+        public void Connect()
+        {
+            if (PhotonNetwork.IsConnected) {
 
                 PhotonNetwork.LocalPlayer.NickName = _PlayerName;
                 Debug.Log("PhotonNetwork.IsConnected! | Trying to Create/Join Room" + RoomName.text);
@@ -101,54 +92,49 @@ namespace Photon.Pun.Demo.PunBasics
                 TypedLobby typedLobby = new TypedLobby(_RoomName, LobbyType.Default);
 
                 PhotonNetwork.JoinOrCreateRoom(_RoomName, roomOptions, typedLobby);
-
-            }else{
-
             }
-		}
+        }
 
-        void ConnectToPhoton(){
+        void ConnectToPhoton()
+        {
             ConnectionStatus.text = "Connecting...";
-            PlayerPrefs.DeleteAll();
             PhotonNetwork.GameVersion = this.gameVersion;
-            //PhotonNetwork.ConnectToBestCloudServer();
-            //PhotonNetwork.ConnectToRegion("in");
             PhotonNetwork.ConnectUsingSettings();
         }
 
-        public void SelectRegionAndConnect()
-        {
-            Debug.Log(Region.GetComponent<ToggleGroup>().ActiveToggles());
-            Connect();
-            foreach (Toggle t in Region.GetComponent<ToggleGroup>().ActiveToggles())
-            {
-                if (t.isOn == true)
-                {
-                    print(t.name);
-                    break;
-                }
-            }
+        //public void SelectRegionAndConnect()
+        //{
+        //    Debug.Log(Region.GetComponent<ToggleGroup>().ActiveToggles());
+        //    Connect();
+        //    foreach (Toggle t in Region.GetComponent<ToggleGroup>().ActiveToggles())
+        //    {
+        //        if (t.isOn == true)
+        //        {
+        //            print(t.name);
+        //            break;
+        //        }
+        //    }
 
-        }
+        //}
 
-        public void SetRegion(int r)
-        {
+        //public void SetRegion(int r)
+        //{
 
 
-            Region.GetComponent<ToggleGroup>().ActiveToggles();
+        //    Region.GetComponent<ToggleGroup>().ActiveToggles();
 
-        Debug.Log("Region : " + Region.GetComponent<Dropdown>().options[r].text);
+        //Debug.Log("Region : " + Region.GetComponent<Dropdown>().options[r].text);
 
-            switch (r)
-            {
-                case 0:
-                    _Region = "None";
-                    break;
+        //    switch (r)
+        //    {
+        //        case 0:
+        //            _Region = "None";
+        //            break;
 
-                default:
-                    break;
-            }
-        }
+        //        default:
+        //            break;
+        //    }
+        //}
 
         public void SetPlayerName(string s)
         {
@@ -161,18 +147,13 @@ namespace Photon.Pun.Demo.PunBasics
         }
 
         void LogFeedback(string message)
-		{
-			if (feedbackText == null) {
-				return;
-			}
+        {
+            if (feedbackText == null) {
+                return;
+            }
 
-			feedbackText.text += System.Environment.NewLine+message;
-		}
-
-        #endregion
-
-
-        #region MonoBehaviourPunCallbacks CallBacks
+            feedbackText.text += System.Environment.NewLine + message;
+        }
 
         public override void OnConnected()
         {
@@ -190,36 +171,36 @@ namespace Photon.Pun.Demo.PunBasics
         }
 
         public override void OnConnectedToMaster()
-		{
-			if (isConnecting)
-			{
-				LogFeedback("OnConnectedToMaster: Next -> try to Join Random Room");
-				Debug.Log("PUN Basics Tutorial/Launcher: OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.\n Calling: PhotonNetwork.JoinRandomRoom(); Operation will fail if no room found");
+        {
+            if (isConnecting)
+            {
+                LogFeedback("OnConnectedToMaster: Next -> try to Join Random Room");
+                Debug.Log("PUN Basics Tutorial/Launcher: OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.\n Calling: PhotonNetwork.JoinRandomRoom(); Operation will fail if no room found");
 
             }
-		}
+        }
 
-		public override void OnJoinRandomFailed(short returnCode, string message)
-		{
-			LogFeedback("<Color=Red>OnJoinRandomFailed</Color>: Next -> Create a new Room");
-			Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
+        public override void OnJoinRandomFailed(short returnCode, string message)
+        {
+            LogFeedback("<Color=Red>OnJoinRandomFailed</Color>: Next -> Create a new Room");
+            Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
 
-            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = this.maxPlayersPerRoom});
-		}
+            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = this.maxPlayersPerRoom });
+        }
 
 
-		public override void OnDisconnected(DisconnectCause cause)
-		{
-			LogFeedback("<Color=Red>OnDisconnected</Color> "+cause);
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            LogFeedback("<Color=Red>OnDisconnected</Color> " + cause);
             loaderAnime.StopLoaderAnimation();
 
-			isConnecting = false;
-			controlPanel.SetActive(true);
+            isConnecting = false;
+            controlPanel.SetActive(true);
 
-		}
+        }
 
-		public override void OnJoinedRoom()
-		{
+        public override void OnJoinedRoom()
+        {
 
             HowManyPlayersInLobby();
 
@@ -244,7 +225,7 @@ namespace Photon.Pun.Demo.PunBasics
 
         public void LoadArena()
         {
-            if(PhotonNetwork.CurrentRoom.PlayerCount > 1)
+            if (PhotonNetwork.CurrentRoom.PlayerCount > 1)
             {
                 PhotonNetwork.LoadLevel("MainArena");
             }
@@ -263,7 +244,6 @@ namespace Photon.Pun.Demo.PunBasics
 
         }
 
-        #endregion
 
-    }
-}
+
+    } }
