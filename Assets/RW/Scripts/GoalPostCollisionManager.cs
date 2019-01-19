@@ -7,21 +7,21 @@ public class GoalPostCollisionManager : MonoBehaviour {
 
     public GameObject BallCollision;
     public GameObject WinnerUI;
-     BallCollisionChecker ballCollisionChecker;
+    BallCollisionChecker ballCollisionChecker;
 
 	// Use this for initialization
 	void Start () {
         WinnerUI.SetActive(false);
-        ballCollisionChecker = BallCollision.GetComponent<BallCollisionChecker>();
-
     }
 	
-	
-
     private void OnTriggerEnter(Collider other)
     {
         if(other.name == "Ball")
         {
+
+            BallCollision = GameObject.Find("Ball");
+            ballCollisionChecker = BallCollision.transform.GetChild(0).gameObject.GetComponent<BallCollisionChecker>();
+
             string LastTouchPlayer = ballCollisionChecker.LastTouchPlayer;
             Debug.Log("Goal by " + LastTouchPlayer);
 

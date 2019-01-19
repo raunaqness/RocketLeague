@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LastTouchPlayer: 
-  LastTouch: {fileID: 0}
 --- !u!135 &7621632122997230767
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -74,7 +73,6 @@ GameObject:
   - component: {fileID: 4414758404765192975}
   - component: {fileID: 6328625246531177590}
   - component: {fileID: 6934463615078479865}
-  - component: {fileID: 3304765303804819385}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Untagged
@@ -186,12 +184,12 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 0
+  Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 0}
-  viewIdField: 0
-  InstantiationId: 5
+  - {fileID: 6934463615078479865}
+  viewIdField: 1
+  InstantiationId: 1
   isRuntimeInstantiated: 0
 --- !u!114 &6934463615078479865
 MonoBehaviour:
@@ -208,25 +206,3 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
---- !u!114 &3304765303804819385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8823920992086530504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 0
-  OwnershipTransfer: 0
-  ObservedComponents:
-  - {fileID: 0}
-  viewIdField: 0
-  InstantiationId: 5
-  isRuntimeInstantiated: 0

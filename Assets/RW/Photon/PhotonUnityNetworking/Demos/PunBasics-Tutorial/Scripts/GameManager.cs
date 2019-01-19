@@ -80,7 +80,9 @@ namespace Photon.Pun.Demo.PunBasics
                 {
                         Debug.Log("--Player1");
                      player1 = PhotonNetwork.Instantiate(this.playerPrefab.name, Player1SpawnPosition.transform.position, Player1SpawnPosition.transform.rotation, 0);
+
                         ball = PhotonNetwork.Instantiate("Ball", BallSpawnTransform.transform.position, BallSpawnTransform.transform.rotation, 0);
+                        ball.name = "Ball";
                 }
                 else
                 {

@@ -62,11 +62,13 @@ namespace Photon.Pun.Demo.PunBasics
         [Space(5)]
         public string _PlayerName = "";
         public string _RoomName = "";
+        public string _Region = "";
 
         [Space(5)]
         public GameObject RoomJoinUI;
         public GameObject Button_LoadArena;
         public GameObject Button_JoinRoom;
+        public GameObject Region;
 
         void Start(){
             Debug.Log("Connecting to Photon Network");
@@ -88,6 +90,8 @@ namespace Photon.Pun.Demo.PunBasics
 
 		public void Connect()
 		{
+            PhotonNetwork.GameVersion = this.gameVersion;
+            PhotonNetwork.ConnectToRegion("kr");
 
             if (PhotonNetwork.IsConnected){
 
@@ -95,6 +99,7 @@ namespace Photon.Pun.Demo.PunBasics
                 Debug.Log("PhotonNetwork.IsConnected! | Trying to Create/Join Room" + RoomName.text);
                 RoomOptions roomOptions = new RoomOptions();
                 TypedLobby typedLobby = new TypedLobby(_RoomName, LobbyType.Default);
+
                 PhotonNetwork.JoinOrCreateRoom(_RoomName, roomOptions, typedLobby);
 
             }else{
@@ -104,8 +109,45 @@ namespace Photon.Pun.Demo.PunBasics
 
         void ConnectToPhoton(){
             ConnectionStatus.text = "Connecting...";
+            PlayerPrefs.DeleteAll();
             PhotonNetwork.GameVersion = this.gameVersion;
+            //PhotonNetwork.ConnectToBestCloudServer();
+            //PhotonNetwork.ConnectToRegion("in");
             PhotonNetwork.ConnectUsingSettings();
+        }
+
+        public void SelectRegionAndConnect()
+        {
+            Debug.Log(Region.GetComponent<ToggleGroup>().ActiveToggles());
+            Connect();
+            foreach (Toggle t in Region.GetComponent<ToggleGroup>().ActiveToggles())
+            {
+                if (t.isOn == true)
+                {
+                    print(t.name);
+                    break;
+                }
+            }
+
+        }
+
+        public void SetRegion(int r)
+        {
+
+
+            Region.GetComponent<ToggleGroup>().ActiveToggles();
+
+        Debug.Log("Region : " + Region.GetComponent<Dropdown>().options[r].text);
+
+            switch (r)
+            {
+                case 0:
+                    _Region = "None";
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         public void SetPlayerName(string s)
@@ -193,6 +235,11 @@ namespace Photon.Pun.Demo.PunBasics
             }
 
 
+        }
+
+        public void LoadMainArena()
+        {
+            PhotonNetwork.LoadLevel("MainArena");
         }
 
         public void LoadArena()
