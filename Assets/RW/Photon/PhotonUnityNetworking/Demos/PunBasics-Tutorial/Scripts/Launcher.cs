@@ -16,16 +16,10 @@ using Photon.Realtime;
 
 namespace Photon.Pun.Demo.PunBasics
 {
-#pragma warning disable 649
-
-    /// <summary>
-    /// Launch manager. Connect, join a random room or create one if none or all full.
-    /// </summary>
     public class Launcher : MonoBehaviourPunCallbacks
     {
     
-
-        [Tooltip("The Ui Panel to let the user enter name, connect and play")]
+        [Tooltip("The UI Panel to let the user enter name, connect and play")]
         [SerializeField]
         private GameObject controlPanel;
 
@@ -36,10 +30,6 @@ namespace Photon.Pun.Demo.PunBasics
         [Tooltip("The maximum number of players per room")]
         [SerializeField]
         private byte maxPlayersPerRoom = 2;
-
-        [Tooltip("The UI Loader Anime")]
-        [SerializeField]
-        private LoaderAnime loaderAnime;
 
         bool isConnecting;
 
@@ -55,87 +45,30 @@ namespace Photon.Pun.Demo.PunBasics
         public Text ConnectionStatus;
 
         [Space(5)]
-        public string _PlayerName = "";
-        public string _RoomName = "";
-
-        [Space(5)]
         public GameObject RoomJoinUI;
         public GameObject Button_LoadArena;
         public GameObject Button_JoinRoom;
 
+        string _PlayerName = "";
+        string _RoomName = "";
+
         void Start() {
             PlayerPrefs.DeleteAll();
+
             Debug.Log("Connecting to Photon Network");
+
             RoomJoinUI.SetActive(false);
             Button_LoadArena.SetActive(false);
+
             ConnectToPhoton();
         }
 
         void Awake()
         {
-            if (loaderAnime == null)
-            {
-                Debug.LogError("<Color=Red><b>Missing</b></Color> loaderAnime Reference.", this);
-            }
-
             PhotonNetwork.AutomaticallySyncScene = true;
-
         }
 
-        public void Connect()
-        {
-            if (PhotonNetwork.IsConnected) {
-
-                PhotonNetwork.LocalPlayer.NickName = _PlayerName;
-                Debug.Log("PhotonNetwork.IsConnected! | Trying to Create/Join Room" + RoomName.text);
-                RoomOptions roomOptions = new RoomOptions();
-                TypedLobby typedLobby = new TypedLobby(_RoomName, LobbyType.Default);
-
-                PhotonNetwork.JoinOrCreateRoom(_RoomName, roomOptions, typedLobby);
-            }
-        }
-
-        void ConnectToPhoton()
-        {
-            ConnectionStatus.text = "Connecting...";
-            PhotonNetwork.GameVersion = this.gameVersion;
-            PhotonNetwork.ConnectUsingSettings();
-        }
-
-        //public void SelectRegionAndConnect()
-        //{
-        //    Debug.Log(Region.GetComponent<ToggleGroup>().ActiveToggles());
-        //    Connect();
-        //    foreach (Toggle t in Region.GetComponent<ToggleGroup>().ActiveToggles())
-        //    {
-        //        if (t.isOn == true)
-        //        {
-        //            print(t.name);
-        //            break;
-        //        }
-        //    }
-
-        //}
-
-        //public void SetRegion(int r)
-        //{
-
-
-        //    Region.GetComponent<ToggleGroup>().ActiveToggles();
-
-        //Debug.Log("Region : " + Region.GetComponent<Dropdown>().options[r].text);
-
-        //    switch (r)
-        //    {
-        //        case 0:
-        //            _Region = "None";
-        //            break;
-
-        //        default:
-        //            break;
-        //    }
-        //}
-
+        // Helper Methods
         public void SetPlayerName(string s)
         {
             _PlayerName = s;
@@ -146,81 +79,24 @@ namespace Photon.Pun.Demo.PunBasics
             _RoomName = s;
         }
 
-        void LogFeedback(string message)
+        // Tutorial Methods
+        public void JoinRoom()
         {
-            if (feedbackText == null) {
-                return;
-            }
-
-            feedbackText.text += System.Environment.NewLine + message;
-        }
-
-        public override void OnConnected()
-        {
-            base.OnConnected();
-            ConnectionStatus.text = "Connected to Photon!";
-            ConnectionStatus.color = Color.green;
-            RoomJoinUI.SetActive(true);
-            Button_LoadArena.SetActive(false);
-
-        }
-
-        public void JoinGGRoom()
-        {
-            PhotonNetwork.JoinRoom("Ggroom");
-        }
-
-        public override void OnConnectedToMaster()
-        {
-            if (isConnecting)
+            if (PhotonNetwork.IsConnected)
             {
-                LogFeedback("OnConnectedToMaster: Next -> try to Join Random Room");
-                Debug.Log("PUN Basics Tutorial/Launcher: OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.\n Calling: PhotonNetwork.JoinRandomRoom(); Operation will fail if no room found");
-
+                PhotonNetwork.LocalPlayer.NickName = _PlayerName;
+                Debug.Log("PhotonNetwork.IsConnected! | Trying to Create/Join Room" + RoomName.text);
+                RoomOptions roomOptions = new RoomOptions();
+                TypedLobby typedLobby = new TypedLobby(_RoomName, LobbyType.Default);
+                PhotonNetwork.JoinOrCreateRoom(_RoomName, roomOptions, typedLobby);
             }
         }
 
-        public override void OnJoinRandomFailed(short returnCode, string message)
+        void ConnectToPhoton()
         {
-            LogFeedback("<Color=Red>OnJoinRandomFailed</Color>: Next -> Create a new Room");
-            Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
-
-            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = this.maxPlayersPerRoom });
-        }
-
-
-        public override void OnDisconnected(DisconnectCause cause)
-        {
-            LogFeedback("<Color=Red>OnDisconnected</Color> " + cause);
-            loaderAnime.StopLoaderAnimation();
-
-            isConnecting = false;
-            controlPanel.SetActive(true);
-
-        }
-
-        public override void OnJoinedRoom()
-        {
-
-            HowManyPlayersInLobby();
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                Button_LoadArena.SetActive(true);
-                Button_JoinRoom.SetActive(false);
-                PlayerStatus.text = "Your are Lobby Leader";
-            }
-            else
-            {
-                PlayerStatus.text = "Connected to Lobby";
-            }
-
-
-        }
-
-        public void LoadMainArena()
-        {
-            PhotonNetwork.LoadLevel("MainArena");
+            ConnectionStatus.text = "Connecting...";
+            PhotonNetwork.GameVersion = this.gameVersion;
+            PhotonNetwork.ConnectUsingSettings();
         }
 
         public void LoadArena()
@@ -237,13 +113,55 @@ namespace Photon.Pun.Demo.PunBasics
 
         public void HowManyPlayersInLobby()
         {
-
             Debug.Log("Total players in Lobby : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
             Debug.Log("Room Info | Name " + PhotonNetwork.CurrentRoom.Name);
             Debug.Log("Room Info | Info " + PhotonNetwork.CurrentRoom.ToString());
-
         }
 
+        // Photon Methods
+        public override void OnConnected()
+        {
+            base.OnConnected();
+            ConnectionStatus.text = "Connected to Photon!";
+            ConnectionStatus.color = Color.green;
+            RoomJoinUI.SetActive(true);
+            Button_LoadArena.SetActive(false);
+        }
 
+        public override void OnConnectedToMaster()
+        {
+            if (isConnecting)
+            {
+                Debug.Log("Connected to Master.");
+            }
+        }
 
-    } }
+        public override void OnJoinRandomFailed(short returnCode, string message)
+        {
+            Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
+            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = this.maxPlayersPerRoom });
+        }
+
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            isConnecting = false;
+            controlPanel.SetActive(true);
+        }
+
+        public override void OnJoinedRoom()
+        {
+            HowManyPlayersInLobby();
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                Button_LoadArena.SetActive(true);
+                Button_JoinRoom.SetActive(false);
+                PlayerStatus.text = "Your are Lobby Leader";
+            }
+            else
+            {
+                PlayerStatus.text = "Connected to Lobby";
+            }
+        }
+    } 
+}
