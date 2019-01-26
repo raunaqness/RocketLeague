@@ -41,8 +41,6 @@ namespace Photon.Pun.Demo.PunBasics
 
         // Start Method
 
-        // Method to Sync the scene
-
         // Helper Methods
 
         // Tutorial Methods

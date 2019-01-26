@@ -25,7 +25,7 @@ namespace Photon.Pun.Demo.PunBasics
         private GameObject player1, player2;
 
         // Start Method
-
+      
         // Update Method
 
         // Photon Methods
