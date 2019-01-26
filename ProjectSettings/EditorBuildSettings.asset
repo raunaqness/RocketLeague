@@ -6,8 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Raunaq/Launcher.unity
+    path: Assets/RW/Scenes/Launcher.unity
     guid: 44f3269dca6ff47968c35ff18db4b34b
   - enabled: 1
-    path: Assets/Raunaq/MainArena.unity
+    path: Assets/RW/Scenes/MainArena.unity
     guid: a4cf3071661604c4e865e903d92829ff
+  m_configObjects: {}
