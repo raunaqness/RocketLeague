@@ -9,15 +9,12 @@ namespace Photon.Pun.Demo.PunBasics
     public class Launcher : MonoBehaviourPunCallbacks
     {
     
-        [Tooltip("The UI Panel to let the user enter name, connect and play")]
         [SerializeField]
         private GameObject controlPanel;
 
-        [Tooltip("The Ui Text to inform the user about the connection progress")]
         [SerializeField]
         private Text feedbackText;
 
-        [Tooltip("The maximum number of players per room")]
         [SerializeField]
         private byte maxPlayersPerRoom = 2;
 
@@ -42,11 +39,13 @@ namespace Photon.Pun.Demo.PunBasics
         string _PlayerName = "";
         string _RoomName = "";
 
+        // Start Method
+
+        // Method to Sync the scene
+
         // Helper Methods
 
-
         // Tutorial Methods
-
 
         // Photon Methods
 
