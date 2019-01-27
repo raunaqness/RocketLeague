@@ -717,7 +717,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controlPanel: {fileID: 1384252624}
   feedbackText: {fileID: 1814088000}
-  maxPlayersPerRoom: 4
+  maxPlayersPerRoom: 2
   PlayerName: {fileID: 552847600}
   RoomName: {fileID: 978177257}
   PlayerStatus: {fileID: 1396361110}
