@@ -95,7 +95,7 @@ namespace Photon.Pun.Demo.PunBasics
         public void LoadArena()
         {
             // 5
-            if (PhotonNetwork.CurrentRoom.PlayerCount > 1)
+            if (PhotonNetwork.CurrentRoom.PlayerCount > 0)
             {
                 PhotonNetwork.LoadLevel("MainArena");
             }
