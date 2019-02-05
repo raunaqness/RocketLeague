@@ -74,6 +74,10 @@ namespace Photon.Pun.Demo.PunBasics
         }
 
         //Helper Methods
+        public void DisableUI()
+        {
+            WinnerUI.SetActive(false);
+        }
 
     }
 }
